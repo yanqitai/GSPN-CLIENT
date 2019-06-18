@@ -5,7 +5,7 @@ is working galaxy diagnostic (GD) and serial port for get information of the dev
 
 you can save the data for register in data.txt or serialData.txt using the syntex:
 
-
+```xml
 -----------------------------
 luis carlos da silva
 12312345678
@@ -23,6 +23,7 @@ SM-G973F
 JDKRILOIQJM
 987654321987654
 -----------------------------
+```
 
 the app does not set the same device in same day.
 
