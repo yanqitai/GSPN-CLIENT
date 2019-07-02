@@ -81,16 +81,27 @@ namespace WindowsFormsApp1.Class
             }
         }
 
-        protected async Task<dynamic> GetDiagnosticoGD(Aparelho ap)
+        protected async Task<Diagnostico> GetDiagnosticoGD(Aparelho ap)
         {
-            Diagnostico dg;
-            if ((dg = diagnosticos.ToList().Find(d => d.imei == ap.Imei)) != null)
+            List<Diagnostico> dg;
+            if ((dg = diagnosticos.ToList().FindAll(d => d.imei == ap.Imei)).Count != 0)
             {
-                return await AparelhoClass.DiagnosticResult(ap, dg.guid.ToString());
+                Diagnostico diagResult = new Diagnostico();
+
+                await dg.ForEachAsync(async x =>
+                {
+                    dynamic d = await AparelhoClass.DiagnosticResult(ap, x.guid.ToString());
+                    if (d != null)
+                    {
+                        diagResult = new Diagnostico() { dynamicGD = d, guid = Guid.Parse(x.guid.ToString()), consul = 1 };
+                    };
+                });
+
+                return diagResult;
             }
             else
             {
-                 return new NullExpandoObject();
+                return new Diagnostico() { dynamicGD = new NullExpandoObject() };
             }
         }
 
@@ -157,17 +168,17 @@ namespace WindowsFormsApp1.Class
                     {
                         Cliente c = await WebApi.GetClienteByCPF(x.Cliente.Cpf, x.Cliente);
                         if (c == null) c = await WebApi.RegisterNewCliente(x.Cliente);
-                        if (c == null) return;
+                        if (c == null) { Console.WriteLine("Usuario não encontrado"); return; }
 
                         x.Aparelho = await WebApi.GetModelData(x.Aparelho);
                         x.Cliente = c;
 
-                        if (x.Cliente == null || x.Aparelho == null) { Console.WriteLine("Erro em construir formulario"); return; };
+                        if (x.Cliente == null || x.Aparelho == null) { Console.WriteLine("Erro em construir formulario"); return; }
 
                         if (x.Reason == null)
                             x = RegistroData.SD.ContainsKey(x.Type.ToString()) ? GetDiagnosticoByType(x) : GetDiagnosticoByConsole(x);
 
-                        x.DiagnosticGD.dynamicGD = await GetDiagnosticoGD(x.Aparelho);
+                        x.DiagnosticGD = await GetDiagnosticoGD(x.Aparelho);
 
                         x.Data = DateTime.Now.Date.ToString("MM-dd-yyyy");
                         Console.Write(x.ToString());
@@ -177,7 +188,7 @@ namespace WindowsFormsApp1.Class
                         //se o aparelho ja foi registrado no dia ele fica em espera
                         if (registros.Any(y => x.Data == y.Data && x.Aparelho.RN == y.Aparelho.RN))
                             {
-                                Console.WriteLine("NOVO REGISTRO PENDENTE");
+                                Console.WriteLine("/nNOVO REGISTRO PENDENTE");
                                 return;
                             };
 

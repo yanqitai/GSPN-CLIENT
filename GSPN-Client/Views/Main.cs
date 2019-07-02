@@ -104,6 +104,8 @@ namespace WindowsFormsApp1.Views
         {
             Console.Clear();
 
+            if (!new FileInfo("database/data.txt").Exists) FileHelper.SaveFile("data.txt","");
+
             await ProcessHelper.CloseProcessByTitle("notepad", "data ");
             ProcessHelper.StartProcess("notepad.exe", "database/data.txt",
                 (Screen.PrimaryScreen.Bounds.Width / 30),
@@ -115,6 +117,8 @@ namespace WindowsFormsApp1.Views
         public static async Task StartDataSerialFile()
         {
             Console.Clear();
+
+            if (!new FileInfo("database/data.txt").Exists) FileHelper.SaveFile("dataSerial.txt", "");
 
             await ProcessHelper.CloseProcessByTitle("notepad", "dataSerial ");
             ProcessHelper.StartProcess("notepad.exe", "database/dataSerial.txt",

@@ -68,6 +68,7 @@ namespace WindowsFormsApp1.Class
         {
             //get the result
             String result = await GalaxyDiagnosticApi.GetDiagnosticResult(guid, ap);
+            if (result == null) return null;
             //parse the result
             dynamic content = await GalaxyDiagnosticService.DiagnosticFormatter(result.ToString());
             return content;

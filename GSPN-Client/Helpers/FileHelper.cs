@@ -9,9 +9,9 @@ namespace WindowsFormsApp1.Helpers
 {
     public class FileHelper
     {
-        public static void SaveFile(String nome, String conteudo, bool sub = true)
+        public static void SaveFile(String nome, String conteudo, bool overwriter= true)
         {
-            if (!sub)
+            if (!overwriter)
             {
                 File.AppendAllText("Database/" + nome, conteudo, Encoding.UTF8);
             }

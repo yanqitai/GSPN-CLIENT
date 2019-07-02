@@ -21,9 +21,12 @@ namespace WindowsFormsApp1.Services
 
             try
             {
-                registrados.AddRange(JsonConvert.DeserializeObject<List<Registro>>(FileHelper.OpenFile("registrados.txt")));
+                registrados = JsonConvert.DeserializeObject<List<Registro>>(FileHelper.OpenFile("registrados.txt"));
+
+                if(registrados == null) Console.WriteLine("registrados.txt value is null");
+                registrados.AddRange(registrados);
             }
-            catch
+            catch(Exception e)
             {
                 Console.WriteLine("json syntax error in registrados.txt");
             }
@@ -65,23 +68,21 @@ namespace WindowsFormsApp1.Services
             return pendentes;
         }
 
-        public async static Task<List<Registro>> LoadDataRegitrados()
+        public static List<Registro> LoadDataRegistros()
         {
-            List<Registro> registrados = new List<Registro>();
+            List<Registro> registros;
 
             try
             {
-                registrados = JsonConvert.DeserializeObject<List<Registro>>(FileHelper.OpenFile("registrados.txt"));
-
-                if(registrados == null) Console.WriteLine("registrados.txt value is null");
-                registrados.AddRange(registrados);
+                registros = JsonConvert.DeserializeObject<List<Registro>>(FileHelper.OpenFile("registrados.txt"));
+                return registros;
             }
-            catch(Exception e)
+            catch
             {
-                Console.WriteLine("json syntax error in registrados.txt");
+                Console.WriteLine("json syntax error in registros.txt");
             }
 
-            return registrados;
+            return null;
         }
 
         public static void SaveData(List<Registro> registros, List<Registro> pendentes)
@@ -159,7 +160,7 @@ namespace WindowsFormsApp1.Services
                 Console.WriteLine("Novos registros pendentes: " + pendentes.Count());
                 Console.WriteLine("Falhados: " + (getAparelhoListByString(string.Join("", fileList.ToArray())).Count() - pendentes.Count()));
 
-                File.WriteAllText("Databse/data.txt", file.Replace(@"\r\n", Environment.NewLine));
+                File.WriteAllText("Database/data.txt", file.Replace(@"\r\n", Environment.NewLine));
 
                 return pendentes;
             }

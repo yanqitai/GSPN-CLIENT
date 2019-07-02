@@ -19,7 +19,7 @@ namespace WindowsFormsApp1
             {
                 dynamic login = JsonConvert.DeserializeObject<NullExpandoObject>(FileHelper.OpenFile("login.json"));
 
-                if (login == null || string.IsNullOrEmpty(login.user) || string.IsNullOrEmpty(login.pass))
+                if (login == null|| string.IsNullOrEmpty(login.user) || string.IsNullOrEmpty(login.pass))
                 {
                     await StartLoginFile();
 
